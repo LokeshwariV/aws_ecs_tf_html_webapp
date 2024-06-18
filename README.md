@@ -20,7 +20,7 @@ This repository represents the Continuous Integration (CI) part of a containeriz
 
 ## Architecture
 
-![alt text](https://file%2B.vscode-resource.vscode-cdn.net/Users/ankitverma/Desktop/Loku/Kamstrup/aws_ecs_tf_html_webapp/image.png?version%3D1718748827641)
+![alt text](image.png)
 
 ## CI/CD Pipeline
 
