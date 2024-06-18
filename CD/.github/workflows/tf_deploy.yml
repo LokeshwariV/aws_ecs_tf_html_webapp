@@ -1,0 +1,74 @@
+name: Infrastructure Provision and deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  provision:
+    name: Provision Infrastructure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.3.5
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -out=tfplan
+
+      - name: Save deployer key
+        run: echo "${{ steps.plan.outputs.deployer_key }}" > deployer-key.pem
+
+      - name: Upload deployer key
+        uses: actions/upload-artifact@v2
+        with:
+          name: deployer-key
+          path: deployer-key.pem
+
+      - name: Upload Terraform plan
+        uses: actions/upload-artifact@v2
+        with:
+          name: tfplan
+          path: tfplan
+
+  deploy:
+    name: Deploy Docker Image
+    runs-on: ubuntu-latest
+    needs: provision
+    if: github.event.inputs.deploy == 'true' # Add condition
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.3.5
+
+      - name: Download deployer key
+        uses: actions/download-artifact@v2
+        with:
+          name: deployer-key
+
+      - name: Set permissions for deployer key
+        run: chmod 600 deployer-key.pem
+
+      - name: Download Terraform plan
+        uses: actions/download-artifact@v2
+        with:
+          name: tfplan
+
+      - name: Terraform Apply
+        env:
+          DEPLOYER_KEY_PATH: deployer-key.pem
+        run: terraform apply tfplan
