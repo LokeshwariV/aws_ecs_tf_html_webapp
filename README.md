@@ -30,3 +30,9 @@ The CI/CD pipeline is defined in the ecr_push.yml file. This workflow is trigger
 2. Login to AWS ECR: Logs in to Amazon ECR using the stored GitHub Secrets.
 3. Build Docker Image: Builds the Docker image from the Dockerfile.
 4. Push Docker Image: Tags the built image and pushes it to the specified ECR repository.
+
+## Conclusion
+
+After successful run, you will be able to find the docker image in AWS ECR with latest tag
+
+![alt text](result.png)
