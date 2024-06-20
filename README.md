@@ -35,4 +35,4 @@ The CI/CD pipeline is defined in the ecr_push.yml file. This workflow is trigger
 
 After successful run, you will be able to find the docker image in AWS ECR with latest tag
 
-![alt text](result.png)
+![alt text](result.PNG)
